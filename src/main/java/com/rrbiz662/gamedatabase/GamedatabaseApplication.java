@@ -2,8 +2,11 @@ package com.rrbiz662.gamedatabase;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.boot.CommandLineRunner;
 
+import com.rrbiz662.gamedatabase.domain.AppUser;
+import com.rrbiz662.gamedatabase.domain.AppUserRepository;
 import com.rrbiz662.gamedatabase.domain.Game;
 import com.rrbiz662.gamedatabase.domain.GameRepository;
 import com.rrbiz662.gamedatabase.domain.Owner;
@@ -20,10 +23,12 @@ public class GamedatabaseApplication implements CommandLineRunner {
 	private static final Logger logger = LoggerFactory.getLogger(GamedatabaseApplication.class);
 	private final GameRepository repository;
 	private final OwnerRepository ownerRepository;
+	private final AppUserRepository userRepository;
 	
-	public GamedatabaseApplication(GameRepository repository, OwnerRepository ownerRepository) {
+	public GamedatabaseApplication(GameRepository repository, OwnerRepository ownerRepository, AppUserRepository userRepository) {
 		this.repository = repository;
 		this.ownerRepository = ownerRepository;
+		this.userRepository = userRepository;
 	}
 
 	public static void main(String[] args) {
@@ -43,6 +48,12 @@ public class GamedatabaseApplication implements CommandLineRunner {
 		repository.save(new Game("Star Wars Outlaws", "Ubisoft", "1234UB", 2024, new BigDecimal(39.99), owner2));
 		repository.save(new Game("Persona 3", "Atlus", "1234AT", 2024, new BigDecimal(35), owner1));
 		repository.save(new Game("Assasin's Creed Mirage", "Ubisoft", "1235UB", 2023, new BigDecimal(20), owner2));
+		
+		// Add temp users to Db
+		// pw = 12345
+		userRepository.save(new AppUser("user", "$2a$10$hURGrQcsqovtAvA6HYIuFeLJ1Ir4mLirg.4cgZI6qPj73jjCV3yea", "USER"));
+		// pw = 12345
+		userRepository.save(new AppUser("admin", "$2a$10$hURGrQcsqovtAvA6HYIuFeLJ1Ir4mLirg.4cgZI6qPj73jjCV3yea", "ADMIN"));
 
 		// Read game data
 		for (Game game : repository.findAll()) {
